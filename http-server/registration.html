@@ -1,0 +1,207 @@
+<!-- Registration.html-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Registration Form</title>
+</head>
+<body class="bg-gray-50">
+    <div class="relative flex min-h-screen flex-col justify-center overflow-hidden py-6">
+        <!-- Registration Form -->
+        <div class="relative bg-white px-6 pt-5 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10 mb-6">
+            <div class="mx-auto max-w-md">
+                <h2 class="text-3xl text-center font-bold leading-tight mb-4">
+                    Registration Form
+                </h2>
+                <div class="divide-y divide-gray-300/50">
+                    <div class="space-y-6 py-4 text-base leading-7 text-gray-600">
+                        <form id="user-form">
+                            <div class="mb-4">
+                                <label for="name" class="text-md w-40 inline-block font-medium leading-5 text-gray-700">
+                                    Name
+                                </label>
+                                <input required type="text" name="name" id="name" class="bg-gray-100 inline-block rounded-lg shadow-md px-4 py-2 text-base leading-6 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter Full name">
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="email" class="text-md w-40 inline-block font-medium leading-5 text-gray-700">
+                                    Email
+                                </label>
+                                <input required type="email" name="email" id="email" class="bg-gray-100 inline-block rounded-lg shadow-md px-4 py-2 text-base leading-6 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your Email">
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="password" class="text-md w-40 inline-block font-medium leading-5 text-gray-700">
+                                    Password
+                                </label>
+                                <input required type="password" name="password" id="password" class="bg-gray-100 inline-block rounded-lg shadow-md px-4 py-2 text-base leading-6 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your password">
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="dob" class="text-md w-40 inline-block font-medium leading-5 text-gray-700">
+                                    Date of Birth
+                                </label>
+                                <input required type="date" name="dob" id="dob" class="bg-gray-100 inline-block rounded-lg shadow-md px-4 py-2 text-base leading-6 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="acceptTerms" class="text-md w-40 inline-block font-medium leading-5 text-gray-700">
+                                    Accept Terms & Conditions
+                                </label>
+                                <input required type="checkbox" name="acceptTerms" id="acceptTerms" class="h-5 w-5 text-blue-500 focus:ring-blue-500">
+                            </div>
+
+                            <div class="flex justify-center">
+                                <button type="submit" id="submit" class="px-6 py-2 rounded-lg shadow-lg bg-green-500 text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Entries Display -->
+        <div class="relative bg-white px-6 pt-5 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
+            <div class="mx-auto">
+                <h2 class="text-3xl text-center font-bold leading-tight mb-4">
+                    Entries
+                </h2>
+                <div class="divide-y divide-gray-300/50">
+                    <div id="user-entries" class="overflow-x-auto">
+                        <!-- Table will be inserted here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to retrieve entries from localStorage
+const retrieveEntries = () => {
+    let entries = localStorage.getItem("user-entries");
+    return entries ? JSON.parse(entries) : [];
+};
+
+// Initialize userEntries array from localStorage
+let userEntries = retrieveEntries();
+
+// Function to display entries in a table
+const displayEntries = () => {
+    const entries = retrieveEntries();
+    
+    // Create table header
+    const tableHeader = `
+        <tr>
+            <th class="px-4 py-2 border bg-gray-100">Name</th>
+            <th class="px-4 py-2 border bg-gray-100">Email</th>
+            <th class="px-4 py-2 border bg-gray-100">Password</th>
+            <th class="px-4 py-2 border bg-gray-100">Dob</th>
+            <th class="px-4 py-2 border bg-gray-100">Accepted terms?</th>
+        </tr>
+    `;
+    
+    // Create table rows from entries
+    const tableEntries = entries.map((entry) => {
+        const nameCell = `<td class="border px-4 py-2">${entry.name}</td>`;
+        const emailCell = `<td class="border px-4 py-2">${entry.email}</td>`;
+        const passwordCell = `<td class="border px-4 py-2">${entry.password}</td>`;
+        const dobCell = `<td class="border px-4 py-2">${entry.dob}</td>`;
+        const acceptTermsCell = `<td class="border px-4 py-2">${entry.acceptTerms}</td>`;
+        
+        return `<tr>${nameCell}${emailCell}${passwordCell}${dobCell}${acceptTermsCell}</tr>`;
+    }).join("\n");
+    
+    // Build the complete table
+    const table = `
+        <table class="table-auto w-full border-collapse">
+            ${tableHeader}
+            ${tableEntries}
+        </table>
+    `;
+    
+    // Insert the table into the DOM
+    document.getElementById("user-entries").innerHTML = table;
+};
+
+// Email validation function
+const isEmailValid = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+};
+
+// Age validation function (18-55 years)
+const isAgeValid = (dob) => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    
+    // Calculate age
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    // Adjust age if birthday hasn't occurred yet this year
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    
+    // Age should be between 18 and 55 (inclusive)
+    return age >= 18 && age <= 55;
+};
+
+// Form submission handler
+const saveUserForm = (event) => {
+    event.preventDefault();
+    
+    // Get form field values
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const dob = document.getElementById("dob").value;
+    const acceptTerms = document.getElementById("acceptTerms").checked;
+    
+    // Validate email
+    if (!isEmailValid(email)) {
+        alert("Please enter a valid email address.");
+        return;
+    }
+    
+    // Validate age
+    if (!isAgeValid(dob)) {
+        alert("Age must be between 18 and 55 years.");
+        return;
+    }
+    
+    // Create entry object
+    const entry = {
+        name,
+        email,
+        password,
+        dob,
+        acceptTerms
+    };
+    
+    // Add entry to userEntries array
+    userEntries.push(entry);
+    
+    // Save userEntries to localStorage
+    localStorage.setItem("user-entries", JSON.stringify(userEntries));
+    
+    // Update the displayed entries
+    displayEntries();
+    
+    // Reset the form
+    document.getElementById("user-form").reset();
+};
+
+// Add event listener to form submission
+document.getElementById("user-form").addEventListener("submit", saveUserForm);
+
+// Display entries on page load
+displayEntries();
+    </script>
+</body>
+</html>
